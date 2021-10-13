@@ -11,10 +11,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  web3dart: ^2.3.1
+  flutter_dotenv: ^5.0.2
   http: ^0.13.0
   syncfusion_flutter_sliders: ^19.3.44
-  flutter_dotenv: ^5.0.2
+  web3dart: ^2.3.1
 
   cupertino_icons: ^1.0.2
 
@@ -25,7 +25,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  fonts:
+  - family: vtks_distress
+    fonts:
+      - asset: fonts/vtks_distress.ttf
+
   assets:
-    - abi.json
+    - assets/abi.json
+    - assets/images/
     - .env
 

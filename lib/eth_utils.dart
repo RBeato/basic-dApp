@@ -10,9 +10,10 @@ class EthereumUtils {
 
   void initialSetup() {
     httpClient = http.Client();
-    ethClient = Web3Client(
-        "https://rinkeby.infura.io/v3/" + dotenv.env['INFURA_PROJECT_ID'],
-        httpClient);
+    String infura =
+        "https://rinkeby.infura.io/v3/" + dotenv.env['INFURA_PROJECT_ID'];
+    ethClient = Web3Client(infura, httpClient);
+    //https://rinkeby.infura.io/v3/c4971f6923244ed5bcd382a0f7e93b97
   }
 
   Future<DeployedContract> getDeployedContract() async {
