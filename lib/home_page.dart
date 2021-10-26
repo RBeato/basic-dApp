@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-import 'package:http/http.dart' as http;
-import 'package:web3dart/web3dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'custom_button.dart';
 import 'eth_utils.dart';
@@ -15,81 +12,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // EthereumUtils ethUtils = EthereumUtils();
+  EthereumUtils ethUtils = EthereumUtils();
 
   double _value = 0.0;
   var _myData;
-  http.Client httpClient;
-  Web3Client ethClient;
+
   final myAddress = dotenv.env['METAMASK_RINKEBY_WALLET_ADDRESS'];
 
   @override
   void initState() {
     super.initState();
-    httpClient = http.Client();
-    String infura =
-        "https://rinkeby.infura.io/v3/" + dotenv.env['INFURA_PROJECT_ID'];
-    ethClient = Web3Client(infura, httpClient);
-    // ethUtils.initialSetup();
-    getBalance().then((_) {
+    ethUtils.initialSetup();
+    ethUtils.getBalance().then((data) {
+      _myData = data;
       setState(() {});
     });
-  }
-
-  Future<DeployedContract> loadContract() async {
-    String abi = await rootBundle.loadString("assets/abi.json");
-    String firstCoinContractAddress = dotenv.env['FIRST_COIN_CONTRACT_ADDRESS'];
-    final contract = DeployedContract(ContractAbi.fromJson(abi, "FirstCoin"),
-        EthereumAddress.fromHex(firstCoinContractAddress));
-
-    return contract;
-  }
-
-  // Future<void> getBalance() async {
-  Future<void> getBalance() async {
-    List<dynamic> result = await query("getBalance", []);
-    var myData = await result[0];
-    _myData = await myData;
-    // return myData;
-  }
-
-  Future<List<dynamic>> query(String functionName, List<dynamic> args) async {
-    final contract = await loadContract();
-    final ethFunction = contract.function(functionName);
-    final result = await ethClient.call(
-      contract: contract,
-      function: ethFunction,
-      params: args,
-    );
-    return result;
-  }
-
-  Future<String> widthrawCoin(double amount) async {
-    var bigAmount = BigInt.from(amount);
-    var response = await submit("withdrawBalance", [bigAmount]);
-    return response;
-  }
-
-  Future<String> depositCoin(double amount) async {
-    var bigAmount = BigInt.from(amount);
-    var response = await submit("depositBalance", [bigAmount]);
-    return response;
-  }
-
-  Future<String> submit(String functionName, List<dynamic> args) async {
-    EthPrivateKey credential =
-        EthPrivateKey.fromHex(dotenv.env['METAMASK_PRIVATE_KEY']);
-    DeployedContract contract = await loadContract();
-    final ethFunction = contract.function(functionName);
-    final result = await ethClient.sendTransaction(
-        credential,
-        Transaction.callContract(
-            contract: contract,
-            function: ethFunction,
-            parameters: args,
-            maxGas: 100000),
-        chainId: 4);
-    return result;
   }
 
   @override
@@ -154,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: "REFRESH",
                   color: Colors.greenAccent,
                   onTapped: () async {
-                    getBalance();
+                    ethUtils.getBalance().then((data) => _myData = data);
                     setState(() {});
                   },
                 ),
@@ -177,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: "DEPOSIT",
                   color: Colors.blueAccent,
                   onTapped: () async {
-                    var _depositReceipt = await depositCoin(_value);
+                    var _depositReceipt = await ethUtils.depositCoin(_value);
                     print("Deposit response: $_depositReceipt");
                     if (_value == 0) {
                       insertValidValue(context);
@@ -188,16 +125,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
                 CustomButton(
-                  title: "WIDTHRAW",
+                  title: "WITHDRAW",
                   color: Colors.pinkAccent,
                   onTapped: () async {
-                    var _widthrawReceipt = await widthrawCoin(_value);
-                    print("Widthraw response: $_widthrawReceipt");
+                    var _widthrawReceipt = await ethUtils.withdrawCoin(_value);
+                    print("Withdraw response: $_widthrawReceipt");
                     if (_value == 0) {
                       insertValidValue(context);
                       return;
                     } else {
-                      showReceipt(context, "withraw", _widthrawReceipt);
+                      showReceipt(context, "withdraw", _widthrawReceipt);
                     }
                   },
                 ),

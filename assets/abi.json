@@ -7,9 +7,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "int256",
+				"internalType": "uint256",
 				"name": "amount",
-				"type": "int256"
+				"type": "uint256"
 			}
 		],
 		"name": "depositBalance",
@@ -22,9 +22,9 @@
 		"name": "getBalance",
 		"outputs": [
 			{
-				"internalType": "int256",
+				"internalType": "uint256",
 				"name": "",
-				"type": "int256"
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -33,9 +33,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "int256",
+				"internalType": "uint256",
 				"name": "amount",
-				"type": "int256"
+				"type": "uint256"
 			}
 		],
 		"name": "withdrawBalance",
