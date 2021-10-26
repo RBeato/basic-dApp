@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.0.2
+  flutter_riverpod: ^0.14.0+3
   http: ^0.13.0
   syncfusion_flutter_sliders: ^19.3.44
   web3dart: ^2.3.1

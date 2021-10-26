@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'exception.dart';
+
 class EthereumUtils {
   http.Client httpClient;
   Web3Client ethClient;
@@ -25,28 +27,31 @@ class EthereumUtils {
 
   Future getBalance() async {
     List<dynamic> result = await query("getBalance", []);
-    var myData = result[0];
-    return myData;
+    return result[0];
   }
 
-  Future<String> withdrawCoin(double amount) async {
+  Future<String> withdrawCoin(int amount) async {
     var bigAmount = BigInt.from(amount);
     var response = await submit("withdrawBalance", [bigAmount]);
     return response;
   }
 
-  Future<String> depositCoin(double amount) async {
+  Future<String> depositCoin(int amount) async {
     var bigAmount = BigInt.from(amount);
     var response = await submit("depositBalance", [bigAmount]);
     return response;
   }
 
   Future<List<dynamic>> query(String functionName, List<dynamic> args) async {
-    final contract = await getDeployedContract();
-    final ethFunction = contract.function(functionName);
-    final result = await ethClient.call(
-        contract: contract, function: ethFunction, params: args);
-    return result;
+    try {
+      final contract = await getDeployedContract();
+      final ethFunction = contract.function(functionName);
+      final result = await ethClient.call(
+          contract: contract, function: ethFunction, params: args);
+      return result;
+    } catch (e) {
+      throw const ContractException();
+    }
   }
 
   Future<String> submit(String functionName, List<dynamic> args) async {
@@ -65,7 +70,7 @@ class EthereumUtils {
           chainId: 4);
       return result;
     } catch (e) {
-      print("Something wrong happened!");
+      throw const ContractException();
     }
   }
 }
