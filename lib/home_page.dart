@@ -187,7 +187,7 @@ showReceipt(BuildContext context, String text, String receipt) {
           title: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Text(
-              "Thank you for making a $text",
+              "Thank you for submiting a $text",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'vtks_distress',
@@ -203,7 +203,7 @@ showReceipt(BuildContext context, String text, String receipt) {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Here is your receipt",
+                  "Use the transaction hash bellow to check if it was successful",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16.0,
